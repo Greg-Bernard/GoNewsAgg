@@ -36,10 +36,12 @@ type NewsAggPage struct {
 	News  map[string]NewsMap
 }
 
+// Index page, empty for now
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "<h1> Hello </h1>")
 }
 
+// Create Go Routines that write to channels to process requests concurrently 
 func newsRoutine(c chan News, Location string) {
 	defer wg.Done()
 	var n News
@@ -52,6 +54,7 @@ func newsRoutine(c chan News, Location string) {
 	c <- n
 }
 
+// newAggHandler loops through the XML's returned from WP and grabs relevant titles and tags
 func newsAggHandler(w http.ResponseWriter, r *http.Request) {
 	var s Sitemapindex
 	// WP for example, can work with any 2-level XML sitemap
